@@ -1,98 +1,107 @@
-// Define Global Variables
-
-// navigationBar global var
-const navigationBar = document.getElementById('navbar__list');
-// sections global var
+// call the sections to put it is var
 const sections = document.querySelectorAll('section');
+// call the unordered list to put it is var 
+const navigationBar = document.getElementById('navbar__list');
+// generate sections in the nav bar by their id and class and create the list that hold the anchor
+// generate the content by innerHTML and then appent it to listItem
 
-// Begin Main Functions
+function generatesections() {
+    for (section of sections) {
+        sectionName = section.getAttribute('data-nav');
+        sectionId = section.getAttribute('id');
+        listItem = document.createElement('li');
+        listItem.innerHTML = `<a href="#${sectionId}" class="menu__link">${sectionName}</a>`
+        navigationBar.appendChild(listItem);
+    }
+}
+// call the fuction
+generatesections();
 
-// build the nav
+// this the an extra method to activate the viewport section
+// I hope you to un comment it and try it 
+/*
+// restrict the updating on the viewport area only 
+function viewportSection(ele) {
+    let sectionviewport = ele.getBoundingClientRect();
+    return Math.floor(sectionviewport.top > 0);
+}
+// activate the class of changing backgroung when it is in viewport
+function trackActiveClass() {
+    for (section of sections) {
+        if (viewportSection(section)) {
+            // if it is in the viewport and doesnt have the class add it
+            if (!section.classList.contains('your-active-class')) {
+                section.classList.add('your-active-class');
+                section.setAttribute('style', 'background-color: rgba(50,50,0,0.2);');
+            }
+            // if its out viewport remove the shadowing
+        } else {
+            section.classList.remove('your-active-class');
+            section.setAttribute('style', 'background-color: trasparent;');
+        }
 
-const navGenerator = () => {
-
-    let navigationUL = '';
-    // looping over all sections
-    sections.forEach(section => {
-
-        const sectionID = section.id;
-        const sectionDataNav = section.dataset.nav;
-
-        navigationUL += `<li><a class="menu__link" href="#${sectionID}">${sectionDataNav}</a></li>`;
-
-    });
-    // append all elements to the navigationBar
-    navigationBar.innerHTML = navigationUL;
-
-
+    }
+}
+// adding EventListener to call the function when scrolling
+document.addEventListener('scroll', trackActiveClass);
+*/
+// making an arrow function to store ids of sections to activate it when it is in viewport
+const activeInViewport = () => {
+    const elem = document.querySelector('.your-active-class');
+    const section1 = document.querySelector('#section1');
+    const section2 = document.querySelector('#section2');
+    const section3 = document.querySelector('#section3');
+    const section4 = document.querySelector('#section4');
+    let scrollPos = window.scrollY;
+    //specify every section with its distance on Y axis from the top
+    // adds 'your-active-class' class to viewport section
+    // the heading has no active class
+    if (scrollPos <= 130) {
+        elem.classList.remove('your-active-class');
+        // section1
+    } else if (scrollPos < 620) {
+        section1.classList.add('your-active-class');
+        section2.classList.remove('your-active-class');
+        return;
+        // section2
+    } else if (625 <= scrollPos && scrollPos <= 1400) {
+        section2.classList.add('your-active-class');
+        section1.classList.remove('your-active-class');
+        section3.classList.remove('your-active-class');
+        return;
+        // section3
+    } else if (1450 <= scrollPos && scrollPos <= 2100) {
+        section3.classList.add('your-active-class');
+        section4.classList.remove('your-active-class');
+        section2.classList.remove('your-active-class');
+        return;
+        // section4
+    } else if (scrollPos < 2300) {
+        section4.classList.add('your-active-class');
+        section3.classList.remove('your-active-class');
+        return;
+    }
 };
+// call the function when scrolling 
+window.addEventListener('scroll', activeInViewport);
 
-navGenerator();
-
-// Add class 'active' to section when near top of viewport
-
-// getting the largest value that's less or equal to the number
-const OffSet = (section) => {
-    return Math.floor(section.getBoundingClientRect().top);
-};
-
-// remove the active class
-const removingActivation = (section) => {
-    section.classList.remove('your-active-class');
-    section.style.cssText = "background-color: linear-gradient(0deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.2) 100%)";
-};
-// adding the active class
-const addingActivation = (conditional, section) => {
-    if (conditional) {
-        section.classList.add('your-active-class');
-        section.style.cssText = "background-color: rgba(250,190,130,.3);";
-    };
-};
-
-//implementating the actual function
-
-const sectionActivation = () => {
-    sections.forEach(section => {
-        const elementOffSet = OffSet(section);
-
-        inviewport = () => elementOffSet < 150 && elementOffSet >= -400;
-
-        removingActivation(section);
-        addingActivation(inviewport(), section);
-    });
-};
-
-window.addEventListener('scroll', sectionActivation);
-
-// Scroll to anchor ID using scrollTO event
-
-const scrolling = () => {
-
+// the fuction to scroll to the appropriate section
+function clickToScrolling() {
     const links = document.querySelectorAll('.navbar__menu a');
-    links.forEach(link => {
-        link.addEventListener('click', () => {
+    for (link of links) {
+        link.addEventListener("click", function iteration() {
             for (i = 0; i < sections; i++) {
                 sections[i].addEventListener("click", sectionScroll(link));
             }
         });
-    });
-
+    };
 };
+clickToScrolling();
 
-scrolling();
-
-
-//End Main Functions
-
-// set timeout for scrolling 
-let isScrolling;
-document.onscroll = () => {
-    clearTimeout(isScrolling)
-    isScrolling = setTimeout(() => {}, 1000);
-};
+// Add a scroll to top button on the page that’s only visible when the user scrolls below .
 
 //Get the button
-var mybutton = document.getElementById("myBtn");
+const mybutton = document.getElementById("myBtn");
 
 // When the user scrolls down 20px from the top of the document, show the button
 window.onscroll = function() { scrollFunction() };
@@ -109,4 +118,4 @@ function scrollFunction() {
 function topFunction() {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
-}
+};
